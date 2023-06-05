@@ -1,11 +1,26 @@
 const express = require('express')
+const ejs = require('ejs');
+const path = require('path')
 
 const app = express()
 
-const blog = { id: 1, title: "Blog title", description: "Blog description" }
+//template engine
+app.set("view engine", "ejs");
 
+
+//middleware
+app.use(express.static('public'))
+
+
+//routing
 app.get('/', (req, res) => {
-    res.send(blog)
+    res.render('index')
+})
+app.get('/about', (req, res) => {
+    res.render('about')
+})
+app.get('/contact', (req, res) => {
+    res.render('contact')
 })
 
 
