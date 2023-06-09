@@ -30,6 +30,15 @@ app.get('/', async (req, res) => {
         blogs: blogs
     })
 })
+
+app.get('/Blogs/:id', async (req, res) => {
+    const photo = await blog.findById(req.params.id)
+    res.render('post', {
+        post: photo
+    })
+})
+
+
 app.get('/about', (req, res) => {
     res.render('about')
 })
