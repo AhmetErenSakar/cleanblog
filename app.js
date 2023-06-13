@@ -1,8 +1,11 @@
 const express = require('express')
 const mongoose = require('mongoose');
+const fileUpload = require('express-fileupload')
 const ejs = require('ejs');
 const path = require('path')
-const blog = require('./models/blog')
+const methodOverride = require('method-override')
+const blogController = require('./controllers/blogControllers')
+const pageController = require('./controllers/pageController')
 
 const app = express()
 
@@ -17,38 +20,24 @@ mongoose.connect('mongodb://127.0.0.1:27017/pcat-test-db', {
 app.set("view engine", "ejs");
 
 
-//middleware
+//middlewares
 app.use(express.static('public'))
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json());
+app.use(fileUpload());
+app.use(methodOverride('_method', {
+    methods: ['POST', 'GET']
+}));
 
-
-//routing
-app.get('/', async (req, res) => {
-    const blogs = await blog.find({})
-    res.render('index', {
-        blogs: blogs
-    })
-})
-
-app.get('/Blogs/:id', async (req, res) => {
-    const photo = await blog.findById(req.params.id)
-    res.render('post', {
-        post: photo
-    })
-})
-
-
-app.get('/about', (req, res) => {
-    res.render('about')
-})
-app.get('/contact', (req, res) => {
-    res.render('contact')
-})
-app.post('/Blogs', async (req, res) => {
-    await blog.create(req.body)
-    res.redirect('/')
-})
+//routes
+app.get('/', blogController.getAllBlogs);
+app.get('/Blogs/:id', blogController.getBlog)
+app.get('/about', pageController.getAbout)
+app.get('/contact', pageController.getContact)
+app.post('/Blogs', blogController.createBlog)
+app.get('/Blogs/edit/:id', pageController.getEdit)
+app.put('/Blogs/:id', blogController.editBlog)
+app.delete('/Blogs/:id', blogController.deleteBlog)
 
 
 const port = 3000;
