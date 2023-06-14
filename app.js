@@ -40,7 +40,7 @@ app.put('/Blogs/:id', blogController.editBlog)
 app.delete('/Blogs/:id', blogController.deleteBlog)
 
 
-const port = 3000;
+const port = process.env.PORT || 5000;
 app.listen(port, () => {
     console.log(`sunucu ${port}unda başlatıldı`);
 });
