@@ -3,10 +3,19 @@ const blog = require('../models/blog');
 
 
 exports.getAllBlogs = async (req, res) => {
-    const blogs = await blog.find({}).sort('-dateCreated')
+
+    const page = req.query.page || 1;
+    const BlogsPerPage = 2;
+    const totalBlog = await blog.find().countDocuments();
+
+    const blogs = await blog.find({}).sort('-dateCreated').skip((page - 1) * BlogsPerPage).limit(BlogsPerPage);
+
     res.render('index', {
-        blogs: blogs
+        blogs: blogs,
+        current: page,
+        pages: Math.ceil(totalBlog / BlogsPerPage)
     })
+
 }
 
 exports.getBlog = async (req, res) => {
